@@ -40,12 +40,36 @@ async function run() {
       res.send(result)
     })
 
-    // app.get('/cars/:id',async(req,res)=>{
-    //   const id = req.params.id
-    //   const query = {_id:new ObjectId(id)}
-    //   const result = await carsCollection.findOne(query)
-    //   res.send(result)
-    // })
+    app.get('/cars/:id',async(req,res)=>{
+      const id = req.params.id
+      const query = {_id:new ObjectId(id)}
+      const result = await carsCollection.findOne(query)
+      res.send(result)
+    })
+
+    app.put('/cars/:id',async(req,res)=>{
+      const id = req.params.id
+      const car = req.body
+      console.log(car);
+      const filter = {_id: new ObjectId(id)}
+      const options= {upsert:true}
+      const updatedCar = {
+        $set:{
+          brandName:car.brandName,
+      modelName:car.modelName,
+      type:car.type,
+      year:car.year,
+      transmission:car.transmission,
+      fuel:car.fuel,
+      price:car.price,
+      description:car.description,
+      photo:car.photo,
+      rating:car.rating,
+        }
+      }
+      const result =await carsCollection.updateOne(filter,updatedCar,options)
+      res.send(result)
+    })
     
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
