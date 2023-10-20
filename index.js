@@ -26,6 +26,7 @@ async function run() {
     await client.connect();
 
     const carsCollection = client.db('CarsDB').collection('cars')
+    const cartDataCollection = client.db('CarsDB').collection("cartData")
 
     app.post('/cars',async(req,res)=>{
       const newCars = req.body
@@ -33,6 +34,8 @@ async function run() {
       const result = await carsCollection.insertOne(newCars)
       res.send(result)
     })
+
+    
 
     app.get('/cars',async(req,res)=>{
       const cursor = carsCollection.find()
@@ -68,6 +71,21 @@ async function run() {
         }
       }
       const result =await carsCollection.updateOne(filter,updatedCar,options)
+      res.send(result)
+    })
+
+    // cart related API
+
+    app.post('/cart',async(req,res)=>{
+      const newCartData = req.body
+      console.log(newCartData);
+      const result = await cartDataCollection.insertOne(newCartData)
+      res.send(result)
+    })
+
+    app.get('/cart',async(req,res)=>{
+      const cursor = cartDataCollection.find()
+      const result = await cursor.toArray()
       res.send(result)
     })
     
